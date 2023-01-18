@@ -7,18 +7,18 @@
 <!-- toc -->
 
 - [Get started](#get-started)
-  * [Install dependency](#install-dependency)
-  * [Write your first hook](#write-your-first-hook)
-  * [Execute your hook from a context](#execute-your-hook-from-a-context)
+  - [Install dependency](#install-dependency)
+  - [Write your first hook](#write-your-first-hook)
+  - [Execute your hook from a context](#execute-your-hook-from-a-context)
 - [Usage with HTTP frameworks](#usage-with-http-frameworks)
-  * [Usage with ExpressJS](#usage-with-expressjs)
-  * [Usage with Fastify](#usage-with-fastify)
+  - [Usage with ExpressJS](#usage-with-expressjs)
+  - [Usage with Fastify](#usage-with-fastify)
 - [Writing hooks](#writing-hooks)
 - [Global context](#global-context)
 - [Applications](#applications)
-  * [Logger hook: To log a requestId for each log entry](#logger-hook-to-log-a-requestid-for-each-log-entry)
-  * [Authentication hooks: To retrieve the authenticated user during a function execution](#authentication-hooks-to-retrieve-the-authenticated-user-during-a-function-execution)
-  * [Validation hooks: To validate body](#validation-hooks-to-validate-body)
+  - [Logger hook: To log a requestId for each log entry](#logger-hook-to-log-a-requestid-for-each-log-entry)
+  - [Authentication hooks: To retrieve the authenticated user during a function execution](#authentication-hooks-to-retrieve-the-authenticated-user-during-a-function-execution)
+  - [Validation hooks: To validate body](#validation-hooks-to-validate-body)
 - [Contribute](#contribute)
 
 <!-- tocstop -->
@@ -252,4 +252,4 @@ export default function () {
 
 ## Contribute
 
-This is really, really early stage. Everything is subject to change. The best way to help me with that is just to communicate me in some way that you are interested in this. You can open an issue or join me on my completely empty Discord Server, I'll be happy to interact.
+This is really, really early stage. Everything is subject to change. The best way to help me with that is just to communicate me in some way that you are interested in this. You can open an issue or send a message in discussions, or just leave a star on the repo to tell me that I should continue to work on that, I'll be happy to interact!
