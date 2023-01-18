@@ -8,7 +8,6 @@ export interface HeadersHookOptions {
 }
 
 const [useHeaders, configureHeadersHook] = createHook({
-  name: useHeadersKey,
   data() {
     return {
       headers: undefined as Record<string, string>,

@@ -1,7 +1,6 @@
 import {runHookContext, createHook} from '../src/index'
 
 const [useRandom, configureRandomHook] = createHook({
-  name: 'useRandom',
   data () {
     return {
       random: Math.random()
@@ -13,7 +12,6 @@ const [useRandom, configureRandomHook] = createHook({
 })
 
 const [useCount] = createHook({
-  name: 'useCount',
   data () {
     return {
       count: 0
@@ -26,7 +24,6 @@ const [useCount] = createHook({
 })
 
 const [useSpecialCount] = createHook({
-  name: 'useRandomMultiplier',
   data () {
     return {
       count: 0
@@ -94,4 +91,15 @@ test('it should be able to use parameters', async () => {
     const random = useSpecialCount(10)
     expect(random).toBe(10)
   })
+})
+
+test('it should be able to create a hook without name', async () => {
+  const [useHook] = createHook({
+    execute () {
+      return 'ok'
+    }
+  })
+
+  const result = useHook()
+  expect(result).toBe('ok')
 })

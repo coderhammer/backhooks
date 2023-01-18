@@ -5,7 +5,6 @@ const [
     useRequestId,
     configureRequestIdHook
 ] = createHook({
-    name: '@backhooks/hooks/useRequestId',
     data () {
         return {
             requestId: crypto.randomUUID()
