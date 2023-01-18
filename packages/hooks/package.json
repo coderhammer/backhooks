@@ -8,8 +8,7 @@
     "main": "dist/index.js",
     "dependencies": {
         "@backhooks/core": "^0.1.2",
-        "@backhooks/http": "^0.1.1",
-        "utility-types": "^3.10.0"
+        "@backhooks/http": "^0.1.1"
     },
     "devDependencies": {
         "typescript": "^4.9.4"
