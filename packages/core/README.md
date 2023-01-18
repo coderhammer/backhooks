@@ -14,7 +14,7 @@ npm install @backhooks/core
 
 This allows you to create a hook. Example of creating a simple hook:
 
-```ts
+````ts
 const [useCount, configureCountHook] = createHook({
   data () {
     return {
@@ -43,4 +43,4 @@ runHookContext(() => {
   console.log(useCount()) // 2
   console.log(useCount()) // 3
 })
-```
+````

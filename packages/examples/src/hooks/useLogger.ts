@@ -1,20 +1,18 @@
 import { createHook } from "@backhooks/core";
 
 const [useLogger] = createHook({
-  data () {
+  data() {
     return {
-      requestId: Math.random().toString()
-    }
+      requestId: Math.random().toString(),
+    };
   },
-  execute (state) {
+  execute(state) {
     return {
-      debug <T>(...args: T[]) {
-        return console.debug(state.requestId, ...args)
-      }
-    }
-  }
-})
+      debug<T>(...args: T[]) {
+        return console.debug(state.requestId, ...args);
+      },
+    };
+  },
+});
 
-export {
-  useLogger
-}
+export { useLogger };

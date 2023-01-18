@@ -166,23 +166,23 @@ This makes it really easy to test our code. You can even test your hooks by leve
 
 ```ts
 import { runHookContext } from "@backhooks/core";
-import { configureHeadersHook } from '@backhooks/http';
-import { useAuthorizationHeader } from './hooks/useAuthorizationHeader'
+import { configureHeadersHook } from "@backhooks/http";
+import { useAuthorizationHeader } from "./hooks/useAuthorizationHeader";
 
-test('it should return the authorization header', async () => {
+test("it should return the authorization header", async () => {
   runHookContext(() => {
-    configureHeadersHook(state => {
+    configureHeadersHook((state) => {
       return {
         ...state,
         headers: {
-          authorization: 'def'
-        }
-      }
-    })
-    const authorizationHeader = useAuthorizationHeader()
-    expect(authorizationHeader).toBe('def') // true
-  })
-})
+          authorization: "def",
+        },
+      };
+    });
+    const authorizationHeader = useAuthorizationHeader();
+    expect(authorizationHeader).toBe("def"); // true
+  });
+});
 ```
 
 ## Global context
