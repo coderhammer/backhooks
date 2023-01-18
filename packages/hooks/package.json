@@ -1,6 +1,6 @@
 {
     "name": "@backhooks/hooks",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "scripts": {
         "build": "tsc",
         "test": "jest"
