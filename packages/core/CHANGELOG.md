@@ -1,5 +1,11 @@
 # @backhooks/core
 
+## 0.1.2
+
+### Patch Changes
+
+- eddca26: Trying CI on release branch
+
 ## 0.1.1
 
 ### Patch Changes
