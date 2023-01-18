@@ -1,7 +1,6 @@
 import { createHook } from "@backhooks/core";
 
 const [useLogger] = createHook({
-  name: 'useLogger',
   data () {
     return {
       requestId: Math.random().toString()
