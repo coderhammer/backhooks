@@ -8,6 +8,7 @@
   "workspaces": [
     "packages/core",
     "packages/http",
+    "packages/hooks",
     "packages/examples"
   ],
   "devDependencies": {
