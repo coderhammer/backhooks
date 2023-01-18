@@ -164,7 +164,7 @@ runHookContext(() => {
 
 This makes it really easy to test our code. You can even test your hooks by leveraging third party hooks update state function. Let's see how we could test our new hook:
 
-```
+```ts
 import { runHookContext } from "@backhooks/core";
 import { configureHeadersHook } from '@backhooks/http';
 import { useAuthorizationHeader } from './hooks/useAuthorizationHeader'
