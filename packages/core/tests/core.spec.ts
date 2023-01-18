@@ -1,105 +1,105 @@
-import {runHookContext, createHook} from '../src/index'
+import { runHookContext, createHook } from "../src/index";
 
 const [useRandom, configureRandomHook] = createHook({
-  data () {
+  data() {
     return {
-      random: Math.random()
-    }
+      random: Math.random(),
+    };
   },
-  execute (state) {
-    return state.random
-  }
-})
+  execute(state) {
+    return state.random;
+  },
+});
 
 const [useCount] = createHook({
-  data () {
+  data() {
     return {
-      count: 0
-    }
+      count: 0,
+    };
   },
-  execute (state) {
-    state.count++
-    return state.count
-  }
-})
+  execute(state) {
+    state.count++;
+    return state.count;
+  },
+});
 
 const [useSpecialCount] = createHook({
-  data () {
+  data() {
     return {
-      count: 0
-    }
+      count: 0,
+    };
   },
-  execute (state, increment: number = 1) {
-    state.count += increment
-    return state.count
-  }
-})
+  execute(state, increment: number = 1) {
+    state.count += increment;
+    return state.count;
+  },
+});
 
-test('it should be able to create a hook and configure it.', async () => {
-  const firstRandom = useRandom()
-  const secondRandom = useRandom()
-  expect(firstRandom).toBe(secondRandom)
-  
+test("it should be able to create a hook and configure it.", async () => {
+  const firstRandom = useRandom();
+  const secondRandom = useRandom();
+  expect(firstRandom).toBe(secondRandom);
+
   await Promise.all([
     runHookContext(async () => {
-      const thirdRandom = useRandom()
-      const fourthRandom = useRandom()
-      expect(thirdRandom).toBe(fourthRandom)
-      expect(thirdRandom).not.toBe(firstRandom)
+      const thirdRandom = useRandom();
+      const fourthRandom = useRandom();
+      expect(thirdRandom).toBe(fourthRandom);
+      expect(thirdRandom).not.toBe(firstRandom);
     }),
     runHookContext(async () => {
-      const thirdRandom = useRandom()
-      const fourthRandom = useRandom()
-      expect(thirdRandom).toBe(fourthRandom)
-      expect(thirdRandom).not.toBe(firstRandom)
+      const thirdRandom = useRandom();
+      const fourthRandom = useRandom();
+      expect(thirdRandom).toBe(fourthRandom);
+      expect(thirdRandom).not.toBe(firstRandom);
     }),
     runHookContext(async () => {
-      const thirdRandom = Math.random()
-      configureRandomHook(state => {
+      const thirdRandom = Math.random();
+      configureRandomHook((state) => {
         return {
           ...state,
-          random: thirdRandom
-        }
-      })
-      const fourthRandom = useRandom()
-      expect(thirdRandom).toBe(fourthRandom)
-    })
-  ])
+          random: thirdRandom,
+        };
+      });
+      const fourthRandom = useRandom();
+      expect(thirdRandom).toBe(fourthRandom);
+    }),
+  ]);
 
-  const thirdRandom = Math.random()
-  configureRandomHook(state => {
+  const thirdRandom = Math.random();
+  configureRandomHook((state) => {
     return {
       ...state,
-      random: thirdRandom
-    }
-  })
-  expect(thirdRandom).toBe(useRandom())
-})
+      random: thirdRandom,
+    };
+  });
+  expect(thirdRandom).toBe(useRandom());
+});
 
-test('should be able to run in a context', async () => {
+test("should be able to run in a context", async () => {
   const count = await runHookContext(async () => {
     for (let i = 0; i < 5; i++) {
-      useCount()
+      useCount();
     }
-    return useCount()
-  })
-  expect(count).toBe(6)
-})
+    return useCount();
+  });
+  expect(count).toBe(6);
+});
 
-test('it should be able to use parameters', async () => {
+test("it should be able to use parameters", async () => {
   await runHookContext(() => {
-    const random = useSpecialCount(10)
-    expect(random).toBe(10)
-  })
-})
+    const random = useSpecialCount(10);
+    expect(random).toBe(10);
+  });
+});
 
-test('it should be able to create a hook without name', async () => {
+test("it should be able to create a hook without name", async () => {
   const [useHook] = createHook({
-    execute () {
-      return 'ok'
-    }
-  })
+    execute() {
+      return "ok";
+    },
+  });
 
-  const result = useHook()
-  expect(result).toBe('ok')
-})
+  const result = useHook();
+  expect(result).toBe("ok");
+});
