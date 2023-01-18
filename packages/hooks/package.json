@@ -5,6 +5,7 @@
         "build": "tsc",
         "test": "jest"
     },
+    "main": "dist/index.js",
     "dependencies": {
         "@backhooks/core": "^0.1.2",
         "@backhooks/http": "^0.1.1"
