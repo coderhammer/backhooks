@@ -1,5 +1,11 @@
 # @backhooks/core
 
+## 0.1.1
+
+### Patch Changes
+
+- 50028a1: Testing CI
+
 ## 0.1.0
 
 ### Minor Changes
