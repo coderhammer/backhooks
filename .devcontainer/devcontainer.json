@@ -7,7 +7,7 @@
   "remoteUser": "node",
   "customizations": {
     "vscode": {
-      "extensions": ["eamodio.gitlens"]
+      "extensions": ["eamodio.gitlens", "esbenp.prettier-vscode"]
     }
   }
 }
