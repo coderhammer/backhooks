@@ -5,7 +5,6 @@ const [
     useAuthorizationHeader,
     configureAuthorizationHeaderHook
 ] = createHook({
-    name: '@backhooks/hooks/useAuthorizationHeader',
     data () {
         const headers = useHeaders()
         return {

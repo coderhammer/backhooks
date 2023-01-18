@@ -1,4 +1,6 @@
 import {AsyncLocalStorage} from 'node:async_hooks'
+import * as crypto from 'node:crypto'
+import type {Optional} from 'utility-types'
 
 const asyncLocalStorage = new AsyncLocalStorage()
 
@@ -36,14 +38,24 @@ const generateUpdateHookStateFunction = <State, ExecuteResult, HookOptions>(opti
   }
 }
 
-export const createHook = <State, ExecuteResult, HookOptions>(options: CreateHookOptions<State, ExecuteResult, HookOptions>): [(parameters?: HookOptions) => ExecuteResult, (fn: (currentState: State) => State) => void] => {
+export const createHook = <State, ExecuteResult, HookOptions>(options: Optional<Omit<CreateHookOptions<State, ExecuteResult, HookOptions>, 'name'>, 'data'>): [(parameters?: HookOptions) => ExecuteResult, (fn: (currentState: State) => State) => void] => {
+  const name = crypto.randomUUID()
+  const data = options.data || (() => ({} as State))
   return [
-    generateHookFunction(options),
-    generateUpdateHookStateFunction(options)
+    generateHookFunction({
+      ...options,
+      name,
+      data
+    }),
+    generateUpdateHookStateFunction({
+      ...options,
+      name,
+      data
+    })
   ]
 }
 
-export const runHookContext = async <T>(fn: () => T): Promise<T> => {
+export const runHookContext = async <T>(fn: () => Promise<T> | T): Promise<T> => {
   const result = await asyncLocalStorage.run({}, fn) as T
   return result
 }

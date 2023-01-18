@@ -4,7 +4,6 @@ const [
   useBody,
   configureBodyHook
 ] = createHook({
-  name: '@backhooks/http/useBody',
   data () {
     return {
       body: undefined as any,
