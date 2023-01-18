@@ -1,5 +1,26 @@
 # Backhooks
 
+<!-- https://til.simonwillison.net/github-actions/markdown-table-of-contents -->
+
+<!-- toc -->
+
+- [Get started](#get-started)
+  * [Install dependency](#install-dependency)
+  * [Write your first hook](#write-your-first-hook)
+  * [Execute your hook from a context](#execute-your-hook-from-a-context)
+- [Usage with HTTP frameworks](#usage-with-http-frameworks)
+  * [Usage with ExpressJS](#usage-with-expressjs)
+  * [Usage with Fastify](#usage-with-fastify)
+- [Writing hooks](#writing-hooks)
+- [Global context](#global-context)
+- [Applications](#applications)
+  * [Logger hook: To log a requestId for each log entry](#logger-hook-to-log-a-requestid-for-each-log-entry)
+  * [Authentication hooks: To retrieve the authenticated user during a function execution](#authentication-hooks-to-retrieve-the-authenticated-user-during-a-function-execution)
+  * [Validation hooks: To validate body](#validation-hooks-to-validate-body)
+- [Contribute](#contribute)
+
+<!-- tocstop -->
+
 Backhooks is a new way to write backend applications by using global hooks scoped to a specific context.
 
 It can be very useful for an HTTP application, for writing reusable and easily testable code.
