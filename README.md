@@ -80,21 +80,21 @@ npm install @backhooks/http
 ```
 
 ```ts
-import * as express from "express";
-import { useHeaders, hooksMiddleware } from "@backhooks/http";
+import express from 'express'
+import { useHeaders, hooksMiddleware } from '@backhooks/http'
 
-const app = express();
+const app = express()
 
-app.use(hooksMiddleware());
+app.use(hooksMiddleware())
 
-app.get("/", async (req, res) => {
-  const headers = useHeaders();
-  res.send(headers);
-});
+app.get('/', (req, res) => {
+  const headers = useHeaders()
+  res.send(headers)
+})
 
 app.listen(3000, () => {
-  console.log("Listening on http://localhost:3000");
-});
+  console.log('Listening on http://localhost:3000')
+})
 ```
 
 ### Usage with Fastify
