@@ -1,13 +1,14 @@
 {
   "name": "@backhooks/examples",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "private": true,
   "scripts": {
     "test": "jest",
     "start:express": "ts-node src/runtimes/express",
     "start:fastify": "ts-node src/runtimes/fastify"
   },
   "dependencies": {
-    "@backhooks/core": "^0.1.0",
+    "@backhooks/core": "^0.1.2",
     "@backhooks/http": "^0.1.1",
     "fastify": "^4.11.0",
     "firebase-admin": "^11.4.1",
