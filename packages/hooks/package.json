@@ -1,14 +1,14 @@
 {
   "name": "@backhooks/hooks",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "scripts": {
     "build": "tsc",
     "test": "jest"
   },
   "main": "dist/index.js",
   "dependencies": {
-    "@backhooks/core": "^0.1.2",
-    "@backhooks/http": "^0.1.1"
+    "@backhooks/core": "^0.2.0",
+    "@backhooks/http": "^0.2.0"
   },
   "devDependencies": {
     "typescript": "^4.9.4"
