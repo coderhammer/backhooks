@@ -1,5 +1,11 @@
 # @backhooks/core
 
+## 0.2.0
+
+### Minor Changes
+
+- 972838b: Remove name option for createHook, make initial state optional, update docs
+
 ## 0.1.2
 
 ### Patch Changes

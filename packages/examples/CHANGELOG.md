@@ -1,5 +1,13 @@
 # @backhooks/examples
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [972838b]
+  - @backhooks/core@0.2.0
+  - @backhooks/http@0.2.0
+
 ## 0.0.3
 
 ### Patch Changes
