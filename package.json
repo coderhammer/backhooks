@@ -4,7 +4,9 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "publish": "npm run build && changeset publish",
-    "make:toc": "markdown-toc -i README.md"
+    "make:toc": "markdown-toc -i README.md",
+    "format:code": "prettier -w .",
+    "version": "changeset version && npm install && npm run format:code"
   },
   "workspaces": [
     "packages/core",
