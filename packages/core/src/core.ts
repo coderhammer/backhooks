@@ -4,7 +4,7 @@ import type { Optional } from "utility-types";
 
 const asyncLocalStorage = new AsyncLocalStorage();
 
-const globalStore = {};
+let globalStore = {};
 
 interface CreateHookOptions<
   State extends Record<string, any>,
@@ -76,4 +76,8 @@ export const runHookContext = async <T>(
 ): Promise<T> => {
   const result = (await asyncLocalStorage.run({}, fn)) as T;
   return result;
+};
+
+export const resetGlobalContext = () => {
+  globalStore = {};
 };
