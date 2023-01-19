@@ -1,4 +1,4 @@
-import { runHookContext, createHook } from "../src/index";
+import { runHookContext, createHook, resetGlobalContext } from "../src/index";
 
 const [useRandom, configureRandomHook] = createHook({
   data() {
@@ -102,4 +102,13 @@ test("it should be able to create a hook without name", async () => {
 
   const result = useHook();
   expect(result).toBe("ok");
+});
+
+test("it should be able to reset the global context", async () => {
+  const random = useRandom();
+  const random2 = useRandom();
+  expect(random).toBe(random2);
+  resetGlobalContext();
+  const random3 = useRandom();
+  expect(random).not.toBe(random3);
 });
