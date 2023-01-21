@@ -1,5 +1,12 @@
 # @backhooks/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 386ea5d: Updated README with new resetGlobalContext function
+- ea23d07: Added the possibility to reset the global context
+
 ## 0.2.0
 
 ### Minor Changes
