@@ -8,13 +8,20 @@
 
 - [Get started](#get-started)
   - [Install dependency](#install-dependency)
-  - [Write your first hook](#write-your-first-hook)
-  - [Execute your hook from a context](#execute-your-hook-from-a-context)
-- [Usage with HTTP frameworks](#usage-with-http-frameworks)
-  - [Usage with ExpressJS](#usage-with-expressjs)
-  - [Usage with Fastify](#usage-with-fastify)
-- [Writing hooks](#writing-hooks)
-- [Global context](#global-context)
+  - [ExpressJS usage](#expressjs-usage)
+  - [Standalone usage](#standalone-usage)
+- [Creating hooks](#creating-hooks)
+  - [Using the `createHook` function](#using-the-createhook-function)
+  - [Updating hookState at runtime](#updating-hookstate-at-runtime)
+- [Other frameworks](#other-frameworks)
+  - [Fastify](#fastify)
+- [Advanced usage](#advanced-usage)
+  - [Global context](#global-context)
+  - [Using hooks in hooks](#using-hooks-in-hooks)
+  - [Testing hooks](#testing-hooks)
+  - [The requestId example](#the-requestid-example)
+    - [Use this requestId for logging](#use-this-requestid-for-logging)
+- [Dependency Injection framework](#dependency-injection-framework)
 - [Applications](#applications)
   - [Logger hook: To log a requestId for each log entry](#logger-hook-to-log-a-requestid-for-each-log-entry)
   - [Authentication hooks: To retrieve the authenticated user during a function execution](#authentication-hooks-to-retrieve-the-authenticated-user-during-a-function-execution)
@@ -23,57 +30,25 @@
 
 <!-- tocstop -->
 
-Backhooks is a new way to write backend applications by using global hooks scoped to a specific context.
+Backhook is a type safe, plug and play and funny way of injecting dependencies and manage context through a NodeJS application.
 
-It can be very useful for an HTTP application, for writing reusable and easily testable code.
+It's compatible with major frameworks like ExpressJS, Fastify, and can also be run standalone in a very simple way.
+
+This project allows you to choose between three packages.
+
+`@backhooks/core`: For a minimalist dependency injection framework
+`@backhooks/http`: For builtin hooks and middlewares related to http contexts
+`@backhooks/hooks`: For a complete set of builtin hooks that can help you with your daily work. (WIP)
 
 ## Get started
 
 ### Install dependency
 
 ```
-npm install @backhooks/core
+npm install @backhooks/core @backhooks/http
 ```
 
-### Write your first hook
-
-```ts
-import { createHook } from "@backhooks/core";
-
-const [useCount, updateCountState] = createHook({
-  data() {
-    return {
-      count: 0,
-    };
-  },
-  execute(state) {
-    state.count++;
-    return state.count;
-  },
-});
-```
-
-### Execute your hook from a context
-
-```ts
-import { runHookContext } from "@backhooks/core";
-
-runHookContext(() => {
-  console.log(useCount()); // 1
-  console.log(useCount()); // 2
-  console.log(useCount()); // 3
-});
-
-runHookContext(() => {
-  console.log(useCount()); // 1
-  console.log(useCount()); // 2
-  console.log(useCount()); // 3
-});
-```
-
-## Usage with HTTP frameworks
-
-### Usage with ExpressJS
+### ExpressJS usage
 
 ```
 npm install @backhooks/http
@@ -88,7 +63,7 @@ const app = express();
 app.use(hooksMiddleware());
 
 app.get("/", (req, res) => {
-  const headers = useHeaders();
+  const headers = useHeaders(); // <- This is a hook
   res.send(headers);
 });
 
@@ -97,7 +72,130 @@ app.listen(3000, () => {
 });
 ```
 
-### Usage with Fastify
+### Standalone usage
+
+```ts
+import { runHookContext } from "@backhooks/core";
+import { useCount } from "./useCount"; // <- We'll see how to build a hook in a minute.
+
+runHookContext(() => {
+  console.log(useCount()); // 1
+  console.log(useCount()); // 2
+  console.log(useCount()); // 3
+});
+
+runHookContext(() => {
+  console.log(useCount()); // 1
+  console.log(useCount()); // 2
+  console.log(useCount()); // 3
+});
+```
+
+## Creating hooks
+
+### Using the `createHook` function
+
+A hook holds a `state` that lives through the entire life of a **hook context**. For the Express application, this context lives through the entire request lifecycle thanks to the `hooksMidleware`. For a standalone app, this context lives in all the functions called (even deeper function calls) from the `runHookContext` function.
+
+This is made possible thanks to the [`AsyncLocalStorage`](https://nodejs.org/dist/latest-v18.x/docs/api/async_context.html#class-asynclocalstorage) nodeJS API
+
+Backhook's `createHook` function allows you to create a piece of state, that will live through an entire **hook context**.
+
+Let's see how to create a `useCount` hook. This hook will return an incremental value while you call it.
+
+1. Define an initial state function
+
+```ts
+import { createHook } from "@backhooks/core";
+
+const [useCount] = createHook({
+  // Here, we define a `data` function that will return
+  // the initial state of the hook. This function must
+  // be synchronous.
+  data() {
+    return {
+      count: 0,
+    };
+  },
+});
+```
+
+2. Define the return value of your hook
+
+```ts
+import { createHook } from "@backhooks/core";
+
+const [useCount] = createHook({
+  data() {
+    return {
+      count: 0,
+    };
+  },
+  // The `execute` function uses the state, can mutate the state
+  // and returns a value. This function can be asynchronous.
+  execute(state) {
+    state.count++;
+    return state.count;
+  },
+});
+```
+
+3. Use the hook in a hook context
+
+```ts
+import { createHook, runHookContext } from "@backhooks/core";
+
+const [useCount] = createHook({
+  data() {
+    return {
+      count: 0,
+    };
+  },
+  // The `execute` function uses the state, can mutate the state
+  // and returns a value. This function can be asynchronous.
+  execute(state) {
+    state.count++;
+    return state.count;
+  },
+});
+
+runHookContext(() => {
+  console.log(useCount()); // 1
+  console.log(useCount()); // 2
+  ...
+});
+```
+
+### Updating hookState at runtime
+
+Hook states can be updated at runtime. If the counter has to start at 50, it can be useful to use the **state updater** returned by the `createHook` function:
+
+```ts
+import { createHook, runHookContext } from "@backhooks/core";
+
+const [useCount, updateCount] = createHook({
+  ...
+});
+
+runHookContext(() => {
+  updateCount(() => {
+    return {
+      count: 50,
+    };
+  });
+  console.log(useCount()); // 51
+});
+```
+
+This is exactly how the `hooksMiddleware` works. It runs a context for the current request, uses the state updater of the `useHeaders` hook and attach the values from the `req` express object.
+
+The `useHeaders()` function can now magically return the values of the request headers through the entire request lifecycle.
+
+## Other frameworks
+
+Don't hesitate to open an issue if you want to use hooks with another framework.
+
+### Fastify
 
 ```
 npm install @backhooks/http
@@ -120,18 +218,42 @@ fastify.get("/", () => {
 });
 
 // Run the server!
-fastify.listen({ port: 3000 }, function (err, address) {
-  if (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
+fastify.listen({ port: 3000 }, () => {
   // Server is now listening on ${address}
 });
 ```
 
-## Writing hooks
+## Advanced usage
 
-Writing hooks is very straightforward. Each hook holds a `state` for a particular context.
+### Global context
+
+The library allows hooks to live in the global context and to run without the need of a hook context.
+
+You also have the possibility to reset the global state at runtime. This can be very useful to reduce overhead in tests:
+
+```ts
+import { resetGlobalContext } from "@backhooks/core";
+
+beforeEach(() => {
+  resetGlobalContext();
+});
+
+test("it should increment", () => {
+  expect(useCount()).toBe(1);
+  expect(useCount()).toBe(2);
+});
+
+test("it should also increment", () => {
+  expect(useCount()).toBe(1);
+  expect(useCount()).toBe(2);
+});
+```
+
+The entire life of the node global process will be bound to a single instance of each called hooks.
+
+### Using hooks in hooks
+
+Defining a hook dependency is very straightforward. As you know, each hook holds a `state` for a specific context.
 
 Let's try out to write a `useAuthorizationHeader` hook:
 
@@ -139,64 +261,46 @@ Let's try out to write a `useAuthorizationHeader` hook:
 import { createHook } from "@backhooks/core";
 import { useHeaders } from "@backhooks/http";
 
-const [useAuthorizationHeader, updateAuthorizationHeaderHookState] = createHook(
-  {
-    data() {
-      // This function is called the first time the hook
-      // is used to create the hook state within a specific
-      // context
+const [useAuthorizationHeader, updateAuthorizationHeader] = createHook({
+  data() {
+    // This function is called the first time the hook
+    // is used to create the hook state within a specific
+    // context
 
-      // Note that in that function, you can use other hooks like `useHeaders`
-      const headers = useHeaders();
+    // Note that in that function, you can use other hooks like `useHeaders`
+    const headers = useHeaders();
 
-      // this function MUST be synchronous.
-      return {
-        header: headers["authorization"],
-      };
-    },
-    execute(state) {
-      // This function is called every time the application
-      // calls the hook. It must return the value for this hook
-
-      // Note that you can also call other hooks in this function.
-
-      // This function CAN be asynchronous. You will have to await
-      // the response of the hook if you make it asynchronous.
-      return state.header;
-    },
-  }
-);
-```
-
-Now, let's see how we could update our hook state during a context execution:
-
-```ts
-import { runHookContext } from "@backhooks/core";
-
-runHookContext(() => {
-  updateAuthorizationHeaderHookState((state) => {
+    // this function MUST be synchronous.
     return {
-      ...state,
-      header: "abc",
+      header: headers["authorization"],
     };
-  });
-  const authorizationHeader = useAuthorizationHeader();
-  expect(authorizationHeader).toBe("abc");
+  },
+  execute(state) {
+    // This function is called every time the application
+    // calls the hook. It must return the value for this hook
+
+    // Note that you can also call other hooks in this function.
+
+    // This function CAN be asynchronous. You will have to await
+    // the response of the hook if you make it asynchronous.
+    return state.header;
+  },
 });
 ```
 
-This makes it really easy to test our code. You can even test your hooks by leveraging third party hooks update state function. Let's see how we could test our new hook:
+### Testing hooks
+
+Being able to update the hook state, makes it very easy to unit test our hooks or functions.
 
 ```ts
 import { runHookContext } from "@backhooks/core";
 import { configureHeadersHook } from "@backhooks/http";
 import { useAuthorizationHeader } from "./hooks/useAuthorizationHeader";
 
-test("it should return the authorization header", async () => {
-  runHookContext(() => {
+test("it should return the authorization header", () => {
+  return runHookContext(() => {
     configureHeadersHook((state) => {
       return {
-        ...state,
         headers: {
           authorization: "def",
         },
@@ -208,11 +312,99 @@ test("it should return the authorization header", async () => {
 });
 ```
 
-## Global context
+### The requestId example
 
-We have seen that for hooks to work, it should be run in a context.
+You can create a `useRequestId` to trace a unique id down the function calls:
 
-Note that there also is a global context in your application. So that you **can** but should not really use hooks outside of a context.
+```ts
+import { createHook } from "@backhooks/core";
+import * as crypto from "node:crypto";
+
+export const [useRequestId] = createHook({
+  data() {
+    return {
+      requestId: crypto.randomUUID(),
+    };
+  },
+  execute(state) {
+    return state.requestId;
+  },
+});
+```
+
+#### Use this requestId for logging
+
+Create a logger that prepends the `useRequestId()` value in output:
+
+```ts
+import { createHook } from "@backhooks/core";
+import { useRequestId } from "./useRequestId";
+
+export const [useLogger] = createHook({
+  data() {
+    return {
+      requestId: useRequestId(),
+    };
+  },
+  execute(state) {
+    return {
+      debug(...args: Parameters<typeof console.debug>) {
+        return console.debug(state.requestId, ...args);
+      },
+    };
+  },
+});
+```
+
+In that way, in all your codebase you can use:
+
+```ts
+useLogger().debug("Hello World!");
+```
+
+, and all the calls of the same request to that `debug` function will prepend the same requestId.
+
+## Dependency Injection framework
+
+Hooks makes it natural to inject dependencies. You can even use classes if you want:
+
+```ts
+import { useLogger } from "./useLogger";
+
+export class MyProvider {
+  constructor(private readonly logger = useLogger());
+
+  foo() {
+    this.logger.debug("bar!");
+  }
+}
+```
+
+Register a hook for your provider in order to provide dependency injection:
+
+```ts
+import { createHook } from "@backhooks/core";
+import { MyProvider } from "./MyProvider";
+
+export const [useMyProvider] = createHook({
+  data() {
+    return new MyProvider();
+  },
+  execute(state) {
+    return state;
+  },
+});
+```
+
+And then use your provider where you want in your app:
+
+```ts
+app.use("/", (req, res) => {
+  const myProvider = useMyProvider();
+  myProvider.foo(); // Logs "bar!"
+  res.send("ok!");
+});
+```
 
 ## Applications
 
