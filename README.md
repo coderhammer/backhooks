@@ -36,9 +36,9 @@ It's compatible with major frameworks like ExpressJS, Fastify, and can also be r
 
 This project allows you to choose between three packages.
 
-`@backhooks/core`: For a minimalist dependency injection framework
-`@backhooks/http`: For builtin hooks and middlewares related to http contexts
-`@backhooks/hooks`: For a complete set of builtin hooks that can help you with your daily work. (WIP)
+- `@backhooks/core`: For a minimalist dependency injection framework
+- `@backhooks/http`: For builtin hooks and middlewares related to http contexts
+- `@backhooks/hooks`: For a complete set of builtin hooks that can help you with your daily work. (WIP)
 
 ## Get started
 
