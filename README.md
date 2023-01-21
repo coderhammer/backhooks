@@ -45,7 +45,7 @@ This project allows you to choose between three packages.
 ### Install dependency
 
 ```
-npm install @backhooks/hooks
+npm install @backhooks/core @backhooks/http
 ```
 
 ### ExpressJS usage
