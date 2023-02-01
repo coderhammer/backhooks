@@ -5,7 +5,8 @@
   "scripts": {
     "test": "jest",
     "start:express": "ts-node src/runtimes/express",
-    "start:fastify": "ts-node src/runtimes/fastify"
+    "start:fastify": "ts-node src/runtimes/fastify",
+    "start:h3": "ts-node src/runtimes/h3"
   },
   "dependencies": {
     "@backhooks/core": "^0.2.0",
