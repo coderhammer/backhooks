@@ -1,16 +1,14 @@
 import { createHook } from "@backhooks/core";
 
-const useHeadersKey = "@backhooks/http/useHeaders";
-
-export interface HeadersHookOptions {
+export interface HeadersHookState {
   headers?: Record<string, string>;
   fetch?: () => Record<string, string>;
 }
 
 const [useHeaders, configureHeadersHook] = createHook({
-  data() {
+  data(): HeadersHookState {
     return {
-      headers: undefined as Record<string, string>,
+      headers: undefined as undefined | Record<string, string>,
       fetch: () => {
         return {};
       },

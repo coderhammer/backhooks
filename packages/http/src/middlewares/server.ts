@@ -1,26 +1,30 @@
 import { runHookContext } from "@backhooks/core";
 import { configureHeadersHook } from "../hooks/headers";
 import { configureBodyHook } from "../hooks/body";
+import { setQuery } from "../hooks/query";
 
 export const hooksMiddleware = () => {
   return (req, res, next) => {
     runHookContext(async () => {
-      configureHeadersHook((currentState) => {
+      configureHeadersHook(() => {
         return {
-          ...currentState,
           fetch() {
             return req.headers;
           },
         };
-      }),
-        configureBodyHook((currentState) => {
-          return {
-            ...currentState,
-            fetch() {
-              return req.body;
-            },
-          };
-        });
+      });
+      configureBodyHook(() => {
+        return {
+          fetch() {
+            return req.body;
+          },
+        };
+      });
+      setQuery(() => {
+        return {
+          query: req.query,
+        };
+      });
       next();
     }).catch((error) => {
       next(error);

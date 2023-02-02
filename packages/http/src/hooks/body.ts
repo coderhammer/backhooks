@@ -1,11 +1,16 @@
 import { createHook } from "@backhooks/core";
 
+interface BodyHookState {
+  body?: any;
+  fetch?: () => any;
+}
+
 const [useBody, configureBodyHook] = createHook({
-  data() {
+  data(): BodyHookState {
     return {
-      body: undefined as any,
+      body: undefined,
       fetch() {
-        return undefined as any;
+        return undefined;
       },
     };
   },

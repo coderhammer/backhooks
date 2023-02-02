@@ -5,6 +5,7 @@ import { json } from "body-parser";
 import { useBody } from "../src/hooks/body";
 import { useHeaders } from "../src/hooks/headers";
 import { hooksMiddleware } from "../src/middlewares/server";
+import { useQuery } from "../src/hooks/query";
 
 test("it should work with express", async () => {
   const app = express();
@@ -18,6 +19,12 @@ test("it should work with express", async () => {
       body,
     });
   });
+  app.get("/bar", (req, res) => {
+    const query = useQuery();
+    res.send({
+      query,
+    });
+  });
   const res = await request(app)
     .post("/")
     .send({
@@ -28,6 +35,9 @@ test("it should work with express", async () => {
     });
   expect(res.body.headers.foo).toBe("bar");
   expect(res.body.body.hello).toBe("world");
+
+  const res2 = await request(app).get("/bar?some=thing");
+  expect(res2.body.query.some).toBe("thing");
 });
 
 test("it should work with fastify", async () => {
