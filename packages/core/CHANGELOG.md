@@ -1,5 +1,11 @@
 # @backhooks/core
 
+## 0.2.2
+
+### Patch Changes
+
+- 4ba9626: Allow hooks to run without the execute function
+
 ## 0.2.1
 
 ### Patch Changes
