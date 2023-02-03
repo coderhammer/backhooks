@@ -1,20 +1,18 @@
+import type { NextFunction, Request, Response } from "express";
 import { runHookContext } from "@backhooks/core";
-import { configureHeadersHook } from "../hooks/headers";
-import { configureBodyHook } from "../hooks/body";
-import { setQuery } from "../hooks/query";
-import { setParams } from "../hooks/params";
+import { setHeaders, setBody, setQuery, setParams } from "@backhooks/hooks";
 
-export const hooksMiddleware = () => {
-  return (req, res, next) => {
+export default function HooksMiddleware() {
+  return (req: Request, res: Response, next: NextFunction) => {
     runHookContext(async () => {
-      configureHeadersHook(() => {
+      setHeaders(() => {
         return {
           fetch() {
             return req.headers;
           },
         };
       });
-      configureBodyHook(() => {
+      setBody(() => {
         return {
           fetch() {
             return req.body;
@@ -38,4 +36,4 @@ export const hooksMiddleware = () => {
       next(error);
     });
   };
-};
+}

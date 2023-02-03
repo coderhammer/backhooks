@@ -7,10 +7,6 @@
   },
   "main": "dist/index.js",
   "dependencies": {
-    "@backhooks/core": "^0.2.0",
-    "@backhooks/http": "^0.2.0"
-  },
-  "devDependencies": {
-    "typescript": "^4.9.4"
+    "@backhooks/core": "^0.2.0"
   }
 }

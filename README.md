@@ -34,10 +34,9 @@ Backhook is a type safe, plug and play and funny way of injecting dependencies a
 
 It's compatible with major frameworks like ExpressJS, Fastify, and can also be run standalone in a very simple way.
 
-This project allows you to choose between three packages.
+This project allows you to choose between two packages.
 
 - `@backhooks/core`: For a minimalist dependency injection framework
-- `@backhooks/http`: For builtin hooks and middlewares related to http contexts
 - `@backhooks/hooks`: For a complete set of builtin hooks that can help you with your daily work. (WIP)
 
 ## Get started
@@ -45,22 +44,23 @@ This project allows you to choose between three packages.
 ### Install dependency
 
 ```
-npm install @backhooks/core @backhooks/http
+npm install @backhooks/hooks
 ```
 
 ### ExpressJS usage
 
 ```
-npm install @backhooks/http
+npm install @backhooks/express @backhooks/hooks
 ```
 
 ```ts
 import express from "express";
-import { useHeaders, hooksMiddleware } from "@backhooks/http";
+import middleware from "@backhooks/express";
+import { useHeaders } from "@backhooks/hooks";
 
 const app = express();
 
-app.use(hooksMiddleware());
+app.use(middleware());
 
 app.get("/", (req, res) => {
   const headers = useHeaders(); // <- This is a hook
@@ -95,7 +95,7 @@ runHookContext(() => {
 
 ### Using the `createHook` function
 
-A hook holds a `state` that lives through the entire life of a **hook context**. For the Express application, this context lives through the entire request lifecycle thanks to the `hooksMidleware`. For a standalone app, this context lives in all the functions called (even deeper function calls) from the `runHookContext` function.
+A hook holds a `state` that lives through the entire life of a **hook context**. For the Express application, this context lives through the entire request lifecycle thanks to the express (or other runtime) `middleware`. For a standalone app, this context lives in all the functions called (even deeper function calls) from the `runHookContext` function.
 
 This is made possible thanks to the [`AsyncLocalStorage`](https://nodejs.org/dist/latest-v18.x/docs/api/async_context.html#class-asynclocalstorage) nodeJS API
 
@@ -173,12 +173,12 @@ Hook states can be updated at runtime. If the counter has to start at 50, it can
 ```ts
 import { createHook, runHookContext } from "@backhooks/core";
 
-const [useCount, updateCount] = createHook({
+const [useCount, setCount] = createHook({
   ...
 });
 
 runHookContext(() => {
-  updateCount(() => {
+  setCount(() => {
     return {
       count: 50,
     };
@@ -187,7 +187,7 @@ runHookContext(() => {
 });
 ```
 
-This is exactly how the `hooksMiddleware` works. It runs a context for the current request, uses the state updater of the `useHeaders` hook and attach the values from the `req` express object.
+This is exactly how the `middleware` works. It runs a context for the current request, uses the state updater of the `useHeaders` hook and attach the values from the `req` express object.
 
 The `useHeaders()` function can now magically return the values of the request headers through the entire request lifecycle.
 
@@ -198,18 +198,17 @@ Don't hesitate to open an issue if you want to use hooks with another framework.
 ### Fastify
 
 ```
-npm install @backhooks/http
+npm install @backhooks/fastify @backhooks/hooks
 ```
 
 ```ts
 import Fastify from "fastify";
-import { hooksMiddleware, useHeaders } from "@backhooks/http";
+import hooksPreHandler from "@backhooks/fastify";
+import { useHeaders } from "@backhooks/hooks";
 
-const fastify = Fastify({
-  logger: true,
-});
+const fastify = Fastify();
 
-fastify.addHook("preHandler", hooksMiddleware());
+fastify.addHook("preHandler", hooksPreHandler());
 
 // Declare a route
 fastify.get("/", () => {
@@ -259,7 +258,7 @@ Let's try out to write a `useAuthorizationHeader` hook:
 
 ```ts
 import { createHook } from "@backhooks/core";
-import { useHeaders } from "@backhooks/http";
+import { useHeaders } from "@backhooks/hooks";
 
 const [useAuthorizationHeader, updateAuthorizationHeader] = createHook({
   data() {
@@ -294,12 +293,12 @@ Being able to update the hook state, makes it very easy to unit test our hooks o
 
 ```ts
 import { runHookContext } from "@backhooks/core";
-import { configureHeadersHook } from "@backhooks/http";
+import { setHeaders } from "@backhooks/hooks";
 import { useAuthorizationHeader } from "./hooks/useAuthorizationHeader";
 
 test("it should return the authorization header", () => {
   return runHookContext(() => {
-    configureHeadersHook((state) => {
+    setHeaders(() => {
       return {
         headers: {
           authorization: "def",
@@ -389,10 +388,7 @@ import { MyProvider } from "./MyProvider";
 export const [useMyProvider] = createHook({
   data() {
     return new MyProvider();
-  },
-  execute(state) {
-    return state;
-  },
+  }
 });
 ```
 

@@ -1,8 +1,8 @@
-import { configureHeadersHook } from "@backhooks/http";
+import { setHeaders } from "@backhooks/hooks";
 import { mainHandler } from "../src/handlers";
 
 test("it should return headers", async () => {
-  configureHeadersHook((state) => {
+  setHeaders((state) => {
     return {
       ...state,
       headers: {
