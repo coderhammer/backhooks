@@ -6,6 +6,7 @@ import { useBody } from "../src/hooks/body";
 import { useHeaders } from "../src/hooks/headers";
 import { hooksMiddleware } from "../src/middlewares/server";
 import { useQuery } from "../src/hooks/query";
+import { useParams } from "../src/hooks/params";
 
 test("it should work with express", async () => {
   const app = express();
@@ -25,6 +26,12 @@ test("it should work with express", async () => {
       query,
     });
   });
+  app.get("/test-param/:foo", (req, res) => {
+    const params = useParams();
+    res.send({
+      params,
+    });
+  });
   const res = await request(app)
     .post("/")
     .send({
@@ -38,6 +45,9 @@ test("it should work with express", async () => {
 
   const res2 = await request(app).get("/bar?some=thing");
   expect(res2.body.query.some).toBe("thing");
+
+  const res3 = await request(app).get("/test-param/bar");
+  expect(res3.body.params.foo).toBe("bar");
 });
 
 test("it should work with fastify", async () => {

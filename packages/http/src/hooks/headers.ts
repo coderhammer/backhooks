@@ -5,7 +5,7 @@ export interface HeadersHookState {
   fetch?: () => Record<string, string>;
 }
 
-const [useHeaders, configureHeadersHook] = createHook({
+export const [useHeaders, configureHeadersHook] = createHook({
   data(): HeadersHookState {
     return {
       headers: undefined as undefined | Record<string, string>,
@@ -25,4 +25,4 @@ const [useHeaders, configureHeadersHook] = createHook({
   },
 });
 
-export { useHeaders, configureHeadersHook };
+export const setHeaders = configureHeadersHook;

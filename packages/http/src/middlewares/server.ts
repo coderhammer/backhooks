@@ -2,6 +2,7 @@ import { runHookContext } from "@backhooks/core";
 import { configureHeadersHook } from "../hooks/headers";
 import { configureBodyHook } from "../hooks/body";
 import { setQuery } from "../hooks/query";
+import { setParams } from "../hooks/params";
 
 export const hooksMiddleware = () => {
   return (req, res, next) => {
@@ -23,6 +24,13 @@ export const hooksMiddleware = () => {
       setQuery(() => {
         return {
           query: req.query,
+        };
+      });
+      setParams(() => {
+        return {
+          fetch() {
+            return req.params;
+          },
         };
       });
       next();
