@@ -388,7 +388,7 @@ import { MyProvider } from "./MyProvider";
 export const [useMyProvider] = createHook({
   data() {
     return new MyProvider();
-  }
+  },
 });
 ```
 
