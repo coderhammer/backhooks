@@ -104,6 +104,24 @@ test("it should be able to create a hook without name", async () => {
   expect(result).toBe("ok");
 });
 
+test("it should be able to create hooks without data or execute", async () => {
+  const [useHookWithoutData] = createHook({
+    execute(state) {
+      return state;
+    },
+  });
+  expect(useHookWithoutData()).toBeUndefined();
+
+  const [useHookWithoutExecute] = createHook({
+    data() {
+      return {
+        foo: "bar",
+      };
+    },
+  });
+  expect(useHookWithoutExecute().foo).toBe("bar");
+});
+
 test("it should be able to reset the global context", async () => {
   const random = useRandom();
   const random2 = useRandom();

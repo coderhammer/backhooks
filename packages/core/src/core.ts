@@ -1,16 +1,11 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import * as crypto from "node:crypto";
-import type { Optional } from "utility-types";
 
 const asyncLocalStorage = new AsyncLocalStorage();
 
 let globalStore = {};
 
-interface CreateHookOptions<
-  State extends Record<string, any>,
-  ExecuteResult,
-  HookOptions
-> {
+interface CreateHookOptions<State, ExecuteResult, HookOptions> {
   name: string;
   data: () => State;
   execute: (state: State, options: HookOptions) => ExecuteResult;
@@ -46,30 +41,84 @@ const generateUpdateHookStateFunction = <State, ExecuteResult, HookOptions>(
   };
 };
 
-export const createHook = <State, ExecuteResult, HookOptions>(
-  options: Optional<
-    Omit<CreateHookOptions<State, ExecuteResult, HookOptions>, "name">,
-    "data"
-  >
+type StateAndExecuteOptions<State, ExecuteResult, HookOptions> = Omit<
+  CreateHookOptions<State, ExecuteResult, HookOptions>,
+  "name"
+>;
+
+type StateOnlyOptions<State, HookOptions> = Omit<
+  StateAndExecuteOptions<State, undefined, HookOptions>,
+  "execute"
+>;
+
+type ExecuteOnlyOptions<ExecuteResult, HookOptions> = Omit<
+  StateAndExecuteOptions<undefined, ExecuteResult, HookOptions>,
+  "data"
+>;
+
+export function createHook<State, ExecuteResult, HookOptions>(
+  options: StateAndExecuteOptions<State, ExecuteResult, HookOptions>
 ): [
   (parameters?: HookOptions) => ExecuteResult,
   (fn: (currentState: State) => State) => void
-] => {
+];
+export function createHook<State, HookOptions>(
+  options: StateOnlyOptions<State, HookOptions>
+): [() => State, (fn: (currentState: State) => State) => void];
+export function createHook<ExecuteResult, HookOptions>(
+  options: ExecuteOnlyOptions<ExecuteResult, HookOptions>
+): [(parameters?: HookOptions) => ExecuteResult, (fn: () => void) => void];
+export function createHook<State, ExecuteResult, HookOptions>(
+  options:
+    | StateOnlyOptions<State, HookOptions>
+    | ExecuteOnlyOptions<ExecuteResult, HookOptions>
+    | StateAndExecuteOptions<State, ExecuteResult, HookOptions>
+) {
   const name = crypto.randomUUID();
-  const data = options.data || (() => ({} as State));
+  if ("data" in options && !("execute" in options)) {
+    const execute = (state: State) => state;
+    return [
+      generateHookFunction({
+        name,
+        data: options.data,
+        execute,
+      }),
+      generateUpdateHookStateFunction({
+        name,
+        data: options.data,
+        execute,
+      }),
+    ];
+  }
+  if ("data" in options) {
+    return [
+      generateHookFunction({
+        name,
+        data: options.data,
+        execute: options.execute,
+      }),
+      generateUpdateHookStateFunction({
+        name,
+        data: options.data,
+        execute: options.execute,
+      }),
+    ];
+  }
+
+  const data = () => undefined;
   return [
     generateHookFunction({
-      ...options,
       name,
       data,
+      execute: options.execute,
     }),
     generateUpdateHookStateFunction({
-      ...options,
       name,
       data,
+      execute: options.execute,
     }),
   ];
-};
+}
 
 export const runHookContext = async <T>(
   fn: () => Promise<T> | T
