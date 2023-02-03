@@ -1,17 +1,13 @@
 import { createHook } from "@backhooks/core";
 import { useAuthorizationHeader } from "./useAuthorizationHeader";
 
-const [useBearerToken, configureBearerTokenHook] = createHook({
+export const [useBearerToken, setBearerToken] = createHook({
   data() {
     const authorizationHeader = useAuthorizationHeader();
-    const bearerToken = authorizationHeader?.match(/^Bearer (.*)$/);
-    return {
-      token: bearerToken?.[1],
-    };
-  },
-  execute(state) {
-    return state.token;
+    if (typeof authorizationHeader !== "string") {
+      return undefined;
+    }
+    const bearerToken = authorizationHeader.match(/^Bearer (.*)$/);
+    return bearerToken?.[1];
   },
 });
-
-export { useBearerToken, configureBearerTokenHook };

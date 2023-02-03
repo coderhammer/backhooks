@@ -1,4 +1,4 @@
-import { useHeaders } from "@backhooks/http";
+import { useHeaders } from "@backhooks/hooks";
 import { useLogger } from "./hooks/useLogger";
 
 export const mainHandler = async () => {

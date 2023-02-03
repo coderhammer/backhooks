@@ -1,12 +1,12 @@
 import Fastify from "fastify";
-import { hooksMiddleware } from "@backhooks/http";
+import HooksMiddleware from "@backhooks/fastify";
 import { mainHandler } from "../handlers";
 
 const fastify = Fastify({
   logger: true,
 });
 
-fastify.addHook("preHandler", hooksMiddleware());
+fastify.addHook("preHandler", HooksMiddleware());
 
 // Declare a route
 fastify.get("/", mainHandler);

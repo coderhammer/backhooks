@@ -1,5 +1,5 @@
 import { runHookContext } from "@backhooks/core";
-import { configureHeadersHook } from "@backhooks/http";
+import { setHeaders } from "../src/useHeaders";
 import {
   useAuthorizationHeader,
   useBearerToken,
@@ -13,7 +13,7 @@ test("useAuthorizationHeader", async () => {
   });
 
   await runHookContext(() => {
-    configureHeadersHook((state) => {
+    setHeaders((state) => {
       return {
         ...state,
         headers: {
@@ -33,7 +33,7 @@ test("useBearerToken", async () => {
   });
 
   await runHookContext(() => {
-    configureHeadersHook((state) => {
+    setHeaders((state) => {
       return {
         ...state,
         headers: {

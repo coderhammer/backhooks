@@ -1,16 +1,9 @@
 import { createHook } from "@backhooks/core";
-import { useHeaders } from "@backhooks/http";
+import { useHeaders } from "./useHeaders";
 
-const [useAuthorizationHeader, configureAuthorizationHeaderHook] = createHook({
-  data() {
+export const [useAuthorizationHeader, setAuthorizationHeader] = createHook({
+  data(): string | string[] | undefined {
     const headers = useHeaders();
-    return {
-      header: headers["authorization"],
-    };
-  },
-  execute(state) {
-    return state.header;
+    return headers["authorization"];
   },
 });
-
-export { useAuthorizationHeader, configureAuthorizationHeaderHook };

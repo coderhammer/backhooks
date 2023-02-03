@@ -8,7 +8,7 @@ import {
   App,
 } from "h3";
 import { listen } from "listhen";
-import { configureBodyHook, configureHeadersHook } from "@backhooks/http";
+import { setBody, setHeaders } from "@backhooks/hooks";
 import { runHookContext } from "@backhooks/core";
 import { mainHandler } from "../handlers";
 
@@ -19,12 +19,12 @@ const makeHookableApp = (h3App: App) => {
   h3App.handler = async (event: H3Event) => {
     return runHookContext(() => {
       const headers = getHeaders(event);
-      configureHeadersHook(() => {
+      setHeaders(() => {
         return {
           headers,
         };
       });
-      configureBodyHook(() => {
+      setBody(() => {
         return {
           fetch() {
             return readBody(event);

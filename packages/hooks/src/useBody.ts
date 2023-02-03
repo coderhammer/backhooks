@@ -5,7 +5,7 @@ interface BodyHookState {
   fetch?: () => any;
 }
 
-const [useBody, configureBodyHook] = createHook({
+export const [useBody, setBody] = createHook({
   data(): BodyHookState {
     return {
       body: undefined,
@@ -24,5 +24,3 @@ const [useBody, configureBodyHook] = createHook({
     return state.body;
   },
 });
-
-export { useBody, configureBodyHook };

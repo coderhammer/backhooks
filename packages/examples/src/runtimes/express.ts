@@ -1,11 +1,11 @@
 import * as express from "express";
-import { hooksMiddleware } from "@backhooks/http";
+import HooksMiddleware from "@backhooks/express";
 import { mainHandler } from "../handlers";
 import { useLogger } from "../hooks/useLogger";
 
 const app = express();
 
-app.use(hooksMiddleware());
+app.use(HooksMiddleware());
 
 app.get("/", async (req, res, next) => {
   try {
