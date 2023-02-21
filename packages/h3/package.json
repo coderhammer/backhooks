@@ -1,0 +1,19 @@
+{
+  "name": "@backhooks/h3",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "main": "dist/index.js",
+  "peerDependencies": {
+    "h3": "^1.0.0"
+  },
+  "dependencies": {
+    "@backhooks/core": "^0.3.0",
+    "@backhooks/hooks": "^0.2.0"
+  },
+  "devDependencies": {
+    "supertest": "^6.3.3"
+  }
+}

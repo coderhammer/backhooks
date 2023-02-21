@@ -1,7 +1,8 @@
 import { createHook } from "@backhooks/core";
 
+type QueryValue = string | undefined | null;
 interface ParsedQs {
-  [key: string]: undefined | string | string[] | ParsedQs | ParsedQs[];
+  [key: string]: ParsedQs | ParsedQs[] | QueryValue | QueryValue[];
 }
 
 export interface QueryHookState {
