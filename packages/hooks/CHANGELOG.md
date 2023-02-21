@@ -1,5 +1,11 @@
 # @backhooks/hooks
 
+## 0.3.0
+
+### Minor Changes
+
+- c053752: Added h3 package, changed useQuery typing
+
 ## 0.2.0
 
 ### Minor Changes
