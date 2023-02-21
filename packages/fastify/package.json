@@ -1,6 +1,6 @@
 {
   "name": "@backhooks/fastify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "build": "tsc",
     "test": "jest"
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@backhooks/core": "^0.3.0",
-    "@backhooks/hooks": "^0.2.0"
+    "@backhooks/hooks": "^0.3.0"
   },
   "devDependencies": {}
 }

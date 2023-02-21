@@ -1,6 +1,6 @@
 {
   "name": "@backhooks/h3",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "build": "tsc",
     "test": "jest"
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@backhooks/core": "^0.3.0",
-    "@backhooks/hooks": "^0.2.0"
+    "@backhooks/hooks": "^0.3.0"
   },
   "devDependencies": {
     "supertest": "^6.3.3"

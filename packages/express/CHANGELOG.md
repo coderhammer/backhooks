@@ -1,5 +1,12 @@
 # @backhooks/express
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [c053752]
+  - @backhooks/hooks@0.3.0
+
 ## 0.1.0
 
 ### Minor Changes
